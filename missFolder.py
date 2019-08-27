@@ -35,7 +35,7 @@ relayTup = None
 _folderPreFix = ''
 _pchPath = None
 _plistPath = None
-
+ 
 def getProjectPbxprojPath(file_dir):
     global pbxprojPath
     fs = os.listdir(file_dir)
@@ -44,20 +44,21 @@ def getProjectPbxprojPath(file_dir):
         if not os.path.isdir(tmp_path):
             try:
                 if tmp_path.endswith('project.pbxproj'):
-                    pbxprojPath = tmp_path
-                    getPBXGroupMap(tmp_path)
-                    conLog.info('[GetPbxPath OK] ' + tmp_path)
+                    if '/Pods/' not in tmp_path:
+                        pbxprojPath = tmp_path
+                        getPBXGroupMap(tmp_path)
+                        conLog.info('[GetPbxPath OK] ' + tmp_path)
             except Exception as e:
                 try:
                     conLog.error('[GetPbxPath Fail] ' + str(e))
                 finally:
                     e = None
                     del e
-
+ 
         else:
             getProjectPbxprojPath(tmp_path)
-
-
+ 
+ 
 def getPBXGroupMap(tmp_path):
     isPBXGroup = False
     row = ''
@@ -74,10 +75,10 @@ def getPBXGroupMap(tmp_path):
                 if '};\n' in line:
                     PBXGroupOneRow(row)
                 row = ''
-
+ 
     Ropen.close()
-
-
+ 
+ 
 def PBXGroupOneRow(row):
     global PBXGroupMap
     global _folderPreFix
@@ -113,7 +114,9 @@ def PBXGroupOneRow(row):
                 path = value.split('path=')[-1]
             elif 'sourceTree=' in value:
                 sourceTree = value.split('sourceTree=')[-1]
-    lower_name = name.lower()
+        lower_name = name.lower()
+    else:
+        return
     if 'view' in lower_name:
         missName = zfjTools.getWordFromLexicon().capitalize() + 'Views'
     else:
@@ -182,17 +185,17 @@ def getPathChildMap(file_dir):
             else:
                 if not isIgnoreFolder(tmp_path):
                     getPathChildMap(tmp_path)
-
-
+ 
+ 
 def isIgnoreFolder(tmp_path):
     global ignoreFolder
     for item in ignoreFolder:
         if tmp_path.endswith(item) or item in tmp_path:
             return True
-
+ 
     return False
-
-
+ 
+ 
 def setPathForPBXGroupMap():
     global MissPbxprojMap
     global PeplacePathMap
@@ -210,18 +213,18 @@ def setPathForPBXGroupMap():
                 fatherMissName = getFatherMissName(fatherName, name)
                 PeplacePathMap[key_name] = (name, missName, fatherName, fatherMissName)
                 MissPbxprojMap[UDID] = (name, missName)
-
-
+ 
+ 
 def getFatherMissName(fatherName, childrenName):
     for item in PBXGroupMap:
         part_map = PBXGroupMap[item]
         if fatherName == part_map['name']:
             if childrenName in part_map['children']:
                 return part_map['missName']
-
+ 
     return ''
-
-
+ 
+ 
 def findFolderAndMiss(file_dir):
     global _pchPath
     global _plistPath
@@ -256,11 +259,11 @@ def findFolderAndMiss(file_dir):
                     finally:
                         e = None
                         del e
-
+ 
             else:
                 findFolderAndMiss(tmp_path)
-
-
+ 
+ 
 def getThisPathMissName(tmp_path):
     pathList = tmp_path.split('/')
     this_path_name = pathList[-1]
@@ -270,8 +273,8 @@ def getThisPathMissName(tmp_path):
         if '&&' + this_path_name in key_name:
             if father_path_name == value_tub[2] or father_path_name == value_tub[3]:
                 return value_tub[1]
-
-
+ 
+ 
 def getNewProjectPbxprojPath(file_dir):
     fs = os.listdir(file_dir)
     for dir in fs:
@@ -288,11 +291,11 @@ def getNewProjectPbxprojPath(file_dir):
                 finally:
                     e = None
                     del e
-
+ 
         else:
             getNewProjectPbxprojPath(tmp_path)
-
-
+ 
+ 
 def missProjectPbxproj(tmp_path):
     global relayTup
     file_data = ''
@@ -327,13 +330,13 @@ def missProjectPbxproj(tmp_path):
                     file_data += '/'.join(lineList)
         else:
             file_data += line
-
+ 
     Ropen.close()
     Wopen = open(tmp_path, 'w')
     Wopen.write(file_data)
     Wopen.close()
-
-
+ 
+ 
 def missProjectPbxprojInLine(line):
     global relayTup
     line_UDID = ''.join(line[:line.find('/*')].split())
@@ -344,8 +347,8 @@ def missProjectPbxprojInLine(line):
         if '*/ = {' in line:
             relayTup = MissPbxprojMap[line_UDID]
     return line
-
-
+ 
+ 
 def initData():
     global MissPbxprojMap
     global PBXGroupMap
@@ -365,8 +368,8 @@ def initData():
     _folderPreFix = ''
     _pchPath = None
     _plistPath = None
-
-
+ 
+ 
 def startMissFolder(file_dir, folderPreFix):
     global _folderPreFix
     initData()
@@ -380,8 +383,8 @@ def startMissFolder(file_dir, folderPreFix):
     setPathForPBXGroupMap()
     findFolderAndMiss(file_dir)
     getNewProjectPbxprojPath(file_dir)
-
-
+ 
+ 
 if __name__ == '__main__':
     file_dir = '/Users/zhangfujie/Desktop/Obfuscated/'
     startMissFolder(file_dir, '')

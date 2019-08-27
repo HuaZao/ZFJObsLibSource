@@ -70,7 +70,7 @@ class rootView(QWidget):
         choicePathBtn.clicked.connect(self.choicePathBtnClick)
         choicePathBtn.setFont(font)
         margin_top += margin_size + 30
-        ignoreLab = QLabel('请输入要忽略的文件夹:', self)
+        ignoreLab = QLabel('请输入要忽略的文件&文件夹:', self)
         ignoreLab.setStyleSheet('color:#000')
         ignoreLab.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         ignoreLab.setGeometry(QtCore.QRect(margin_size, margin_top, 150, 30))
@@ -80,7 +80,7 @@ class rootView(QWidget):
         self.ignoreEdit.setFont(font)
         self.ignoreEdit.setText('Pods,Vendor,LIB,Util,Lib,lib')
         font.setPointSize(12)
-        ignoreTips = QLabel('*多个文件夹请用,号分割', self)
+        ignoreTips = QLabel('*多个文件&文件夹请用,号分割', self)
         ignoreTips.setStyleSheet('color:#cc0066')
         ignoreTips.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         ignoreTips.setGeometry(QtCore.QRect(margin_size * 3 + 150 + 350, margin_top, 140, 30))
@@ -354,6 +354,8 @@ class rootView(QWidget):
         if len(ignoreFilesStr) > 0:
             for ignoreFile in ignoreFilesStr.split(','):
                 ignoreFile_new = '/' + ignoreFile + '/'
+                if '.' in ignoreFile:
+                    ignoreFile_new = '/' + ignoreFile
                 if ignoreFile_new not in ignoreFiles.ignore_Files:
                     ignoreFiles.ignore_Files.append(ignoreFile_new)
  

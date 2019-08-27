@@ -13,7 +13,7 @@ import os, ignoreFiles as igFil
 from singletonModel import ZFJPersoninfo
 import zfjTools, confusionLog as conLog
 _projectNameTup = None
-
+ 
 def getMyProjectName(file_dir):
     global _projectNameTup
     fs = os.listdir(file_dir)
@@ -27,13 +27,12 @@ def getMyProjectName(file_dir):
                     projectNamePreFix = personinfo.prefixMap['projectNamePreFix']
                     if len(projectNamePreFix) == 0:
                         projectNamePreFix = zfjTools.getWordFromLexicon().capitalize() + zfjTools.getWordFromLexicon().capitalize()
-                    _projectNameTup = (
-                     _projectName, projectNamePreFix)
+                _projectNameTup = (_projectName, projectNamePreFix)
                     break
                 else:
                     getMyProjectName(tmp_path)
-
-
+ 
+ 
 def modifyFolderName(file_dir):
     if _projectNameTup == None:
         return
@@ -56,13 +55,13 @@ def modifyFolderName(file_dir):
                 finally:
                     e = None
                     del e
-
+ 
             if not os.path.isdir(tmp_path):
                 pass
             else:
                 modifyFolderName(tmp_path)
-
-
+ 
+ 
 def findProjectPbxproj(file_dir):
     if _projectNameTup == None:
         return
@@ -87,28 +86,28 @@ def findProjectPbxproj(file_dir):
                 finally:
                     e = None
                     del e
-
+ 
         else:
             findProjectPbxproj(tmp_path)
-
-
+ 
+ 
 def modifyProjectPbxproj(tmp_path):
     file_data = ''
     Ropen = open(tmp_path, 'r')
     for line in Ropen:
         file_data += line.replace(_projectNameTup[0], _projectNameTup[1])
-
+ 
     Ropen.close()
     Wopen = open(tmp_path, 'w')
     Wopen.write(file_data)
     Wopen.close()
-
-
+ 
+ 
 def initData():
     global _projectNameTup
     _projectNameTup = None
-
-
+ 
+ 
 def startModifyProjectName(file_dir):
     initData()
     conLog.info('----------------------------------------')
@@ -117,8 +116,8 @@ def startModifyProjectName(file_dir):
     conLog.info('----------------------------------------')
     modifyFolderName(file_dir)
     findProjectPbxproj(file_dir)
-
-
+ 
+ 
 if __name__ == '__main__':
     file_dir = '/Users/zhangfujie/Desktop/Obfuscated/'
     startModifyProjectName(file_dir)

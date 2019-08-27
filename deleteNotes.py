@@ -6,7 +6,7 @@
 #如果觉得不错,请分享给你朋友使用吧!
 import confusionLog as conLog, ignoreFiles as igFil, os
 last_type = False
-
+ 
 def deleteNotesInLine(line):
     global last_type
     old_line = line
@@ -31,8 +31,8 @@ def deleteNotesInLine(line):
             if line.strip().startswith('#warning'):
                 line = ''
         return line
-
-
+ 
+ 
 def deleteTwoLine(line):
     if line.strip().startswith('//'):
         line = ''
@@ -47,13 +47,13 @@ def deleteTwoLine(line):
             if count == 2:
                 newLineList.append(linePart)
                 break
-
+ 
         line = '//'.join(newLineList)
     if len(line) > 0:
         line += '\n'
     return line
-
-
+ 
+ 
 def deleteLineStars(line):
     global last_type
     if '*/' not in line:
@@ -73,13 +73,13 @@ def deleteLineStars(line):
             if count == 2:
                 newLineList.append(linePart)
                 break
-
+ 
         line = '//'.join(newLineList)
     if len(line) > 0:
         line += '\n'
     return line + '\n'
-
-
+ 
+ 
 def readFileEveryLine(file_path):
     file_data = ''
     Ropen = open(file_path, 'r')
@@ -89,13 +89,13 @@ def readFileEveryLine(file_path):
         if new_line != None:
             if len(new_line) > 0:
                 file_data += new_line
-
+ 
     Ropen.close()
     Wopen = open(file_path, 'w')
     Wopen.write(file_data)
     Wopen.close()
-
-
+ 
+ 
 def startDeleteNotes(file_dir):
     fs = os.listdir(file_dir)
     for dir in fs:
@@ -103,7 +103,7 @@ def startDeleteNotes(file_dir):
         if not os.path.isdir(tmp_path):
             try:
                 if not igFil.isIgnoreFiles(tmp_path):
-                    if tmp_path.endswith('.h') or tmp_path.endswith('.m') or tmp_path.endswith('.pch'):
+                    if tmp_path.endswith('.h') or tmp_path.endswith('.m') or tmp_path.endswith('.mm') or tmp_path.endswith('.swift') or tmp_path.endswith('.pch'):
                         readFileEveryLine(tmp_path)
                         conLog.info('[DelNote OK] ' + tmp_path)
             except Exception as e:
@@ -112,6 +112,6 @@ def startDeleteNotes(file_dir):
                 finally:
                     e = None
                     del e
-
+ 
         else:
             startDeleteNotes(tmp_path)

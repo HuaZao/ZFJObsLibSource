@@ -4,11 +4,7 @@
 #Powered by BugScaner
 #http://tools.bugscaner.com/
 #如果觉得不错,请分享给你朋友使用吧!
-import addRandomCode
-import random
-import os
-import confusionLog as conLog
-import ignoreFiles as igFil
+import addRandomCode, random, os, confusionLog as conLog, ignoreFiles as igFil
 from singletonModel import ZFJPersoninfo
 allObjRubCodeMap = {}
  
@@ -117,7 +113,7 @@ def realizeRubbishFunCode(file_dir, amount, rubPrefix):
                     if not notUpdateFile(tmp_path):
                         addCodeAtHFile(tmp_path, rubCodeTuple)
                         conLog.info('[AddCode OK] ' + tmp_path)
-                if tmp_path.endswith('.m'):
+                if tmp_path.endswith('.m') or tmp_path.endswith('.mm'):
                     if not notUpdateFile(tmp_path):
                         addCodeAtMFile(tmp_path, rubCodeTuple)
                         conLog.info('[AddCode OK] ' + tmp_path)
@@ -142,7 +138,7 @@ def propertyListAtMFile(file_dir):
         tmp_path = os.path.join(file_dir, dir)
         if not os.path.isdir(tmp_path):
             try:
-                if tmp_path.endswith('.m'):
+                if tmp_path.endswith('.m') or tmp_path.endswith('.mm'):
                     if not notUpdateFile(tmp_path):
                         getPropertyList(tmp_path)
                         conLog.info('[CallFun OK] ' + tmp_path)

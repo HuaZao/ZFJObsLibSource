@@ -6,7 +6,7 @@
 #如果觉得不错,请分享给你朋友使用吧!
 import confusionLog as conLog
 ignore_Files = [
- '/Pods/', '/Vendor/', '/LIB/', '/Lib/', '/lib/', '/.git/', '/Gategory/', '/Podfile', '/Podfile.lock', '/README.md']
+ '/Pods/', '/Vendor/', '/LIB/', '/Lib/', '/lib/', '/.git/', '/Gategory/', '/Podfile', '/Podfile.lock', '/README.md']
 
 def isIgnoreFiles(tmp_path):
     for item in ignore_Files:
